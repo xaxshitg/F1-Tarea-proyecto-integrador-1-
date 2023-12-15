@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+## link del archivo .R:https://github.com/xaxshitg/F1-Tarea-proyecto-integrador-1-/blob/main/funcionesAnualidades.R 
 # Valores futuros: Anualidad Vencida
 
 ## Función para encontrar valor futuro:
