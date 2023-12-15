@@ -1,0 +1,389 @@
+---
+title: "Proyecto Integrador"
+author: "Abigail Sampedro"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Valores futuros: Anualidad Vencida
+
+## Función para encontrar valor futuro:
+
+Una persona desea ahorrar $500.00 cada fin de quincena durante 40 años. Si el fondo de inversión paga una tasa de rendimiento de 7.5% ¿Cuánto dinero tendrá ahorrado al final de su proyecto financiero?
+```{r}
+ VFVen= function(anualidad, tasa, periodos)
+  {
+  vf= anualidad *((1+tasa)^periodos-1)/ tasa
+  return(vf)
+  }
+  anualidad= 500
+  tasa= 0.003125
+  periodos= 960
+  
+  resultado= VFVen(anualidad, tasa, periodos)
+  print(paste("El valor futuro es: $", round(resultado, digits=2)))
+```
+
+## Función para encontrar el pago quincenal:
+
+Una persona desea tener $3038688.17 ahorrado al final de 40 años. Si en el fondo de inversión
+le ofrecen una tasa de rendimiento del 7.5% y los pagos los quiere hacer al final de cada quincena ¿Cuánto debe ser el pago quincenal?
+```{r}
+pagoVFVen= function(valorf, periodos1, tasa1)
+  {
+  a= valorf/(((1+tasa1)^periodos1-1)/tasa1)
+  return(a)
+  }
+  valorf= 3038688.17
+  tasa1= 0.003125
+  periodos1= 960
+  
+  pago= pagoVFVen(valorf, periodos1, tasa1)
+  print(paste("El pago deberá ser de: $", round(pago, digits=2)))
+```
+
+## Función para calcular el número de periodos:
+
+Una persona desea tener $3038688.17 ahorrado para un viaje, si quiere hacer pagos de 500.00 al final de cada quincena con una tasa de rendimiento del 7.5% ¿Por cuánto tiempo debe ahorrar para llegar a la cantidad final deseada?
+```{r}
+ periodosVFVen= function(valorf1, anualidad1, tasa2)
+  {
+  per= log(((valorf1*tasa2)/anualidad1)+1)/log(1+tasa2)
+  return(per)
+  }
+  valorf1= 3038688.17
+  anualidad1= 500.00
+  tasa2= 0.075/24
+  
+  nper= (periodosVFVen(valorf1, anualidad1, tasa2))/24
+  print(paste("El número de periodos es:", round(nper, digits=2)))
+```
+
+## Función para encontrar tasa de interés:
+
+Una persona desea obtener $3038688.17 al final de 40 años, con ahorros constantes de 500 pesos al finalizar cada quincena ¿De cuánto debe ser la tasa anual para que esto suceda?
+```{r}
+ tasaVFVen = function(vf, t, a)
+  {
+  dif = 1000000
+  aprox = 0
+  
+  for (i in 1:1000000) {
+    r = i / 1000000
+    aprox = a *((1 + r)^ t - 1)/r
+    dif = abs(vf - aprox)
+    
+    if (vf / 10000 >= dif) 
+  {
+      break
+  }
+  }
+  
+  return(r * 100 * 24)
+  }
+  vf= 3038688.17
+  a= 500
+  t= 960
+  tasai= tasaVFVen(vf, t, a)
+  print(paste("La tasa de interés es:", tasai))
+
+```
+
+# Valores futuros: Anualidad Anticipada
+
+## Función para encontrar Valor Futuro:
+
+Una persona desea ahorrar $500.00 cada principio de quincena durante 40 años. Si el fondo de inversión paga una tasa de rendimiento de 7.5% ¿Cuánto dinero tendrá ahorrado al final de su proyecto financiero?
+```{r}
+VFAnt= function(panual, interes, plazos)
+  {
+  vfan= (panual*(((1+interes)^plazos-1)/interes))*(1+interes)
+  return(vfan)
+  }
+  panual= 500
+  interes= 0.003125
+  plazos= 960
+  
+  valorfuturoa= VFAnt(panual, interes, plazos)
+  print(paste("Este es el valor futuro para anualidad anticipada: $", round(valorfuturoa,   digits=2)))
+```
+
+## Función para encontrar pago quincenal:
+
+Una persona desea tener ahorrado $3048184.07 dentro de 40 años, si le ofrecen una tasa de rendimiento del 7.5% y quiere ir realizando los pagos a principio de cada quincena ¿De cuánto debe ser el pago quincenal?
+```{r}
+  pagoVFAnt= function(vfuturo, interes1, plazos1)
+  {
+  pagoa= vfuturo*interes1/((((1+interes1)^plazos1-1))*(1+interes1))
+  return(pagoa)
+  }
+  vfuturo= 3048184.07
+  interes1= 0.003125
+  plazos1= 960
+  
+  pagoanual= pagoVFAnt(vfuturo, interes1, plazos1)
+  print(paste("El pago quincenal es de: $", round(pagoanual, digits=2)))
+```
+
+## Función para encontrar el número de plazos:
+
+Una persona desea tener $3048184.07 con pagos quincenales de 500 pesos y una tasa de rendimiento del 7.5% anual ¿Por cuánto tiempo debe realizar dichos pagos?
+```{r}
+ periodosVFAnt= function(vfuturo1, panual1, interes2)
+  {
+  npla= log(1+(vfuturo1/(panual1*(1+interes2)))*interes2)/log(1+interes2)
+  return(npla)
+  }
+  vfuturo1= 3048184.07
+  panual1= 500
+  interes2= 0.075/24
+  
+  plazosn= periodosVFAnt(vfuturo1, panual1, interes2)/24
+  print(paste("El número de plazos es:", round(plazosn, digits=2)))
+```
+
+## Función para encontrar tasa de interés:
+
+Una persona desea tener $3048184.07 al final de 40 años con 500 pagos quincenales ¿Cuál debe ser la tarifa de interés para lograr lo planeado?
+```{r}
+tasaVFAnt = function(vf1, t1, a1)
+{
+  dif = 1000000
+  aprox = 0
+  
+  for (i in 1:1000000) 
+    {
+    r1 = i / 1000000
+    aprox = a1 * ((1 + r1)^ t1 - 1) / r1 * (1 + r1)
+    dif = abs(vf1 - aprox)
+    
+    if (vf1 / 10000 >= dif) 
+    {
+      break
+    }
+  }
+  
+  return(r1 * 100 * 24)
+}
+vf1= 3048184.07
+t1= 960
+a1= 500
+tarifai= tasaVFAnt(vf1, t1, a1)
+print(paste("La tarifa de interés es:", round(tarifai, digits=2)))
+
+
+```
+
+# Valores presentes: Anualidad Vencida
+
+## Función para encontrar el valor presente:
+
+ Una persona paga cada quincena $450.00 durante 2 años. Si la tienda departamental le cobra de 11% de interés ¿Cuánto le prestaron?
+```{r}
+  VAVen= function(anualidad2, periodos2, tasa3)
+  {
+  va= anualidad2*((1-(1+tasa3)^-periodos2)/tasa3)
+  return(va)
+  }
+  anualidad2= 450
+  periodos2= 48
+  tasa3= 0.00458333
+  
+  vat= VAVen(anualidad2, periodos2, tasa3)
+  print(paste("Este es el valor presente: $", round(vat, digits=2)))
+```
+
+## Función para encontrar el pago quincenal:
+
+A una persona le prestaron $19349.45 y le dijeron que tenía que realizar pagos cada quincena con una tarifa de interés del 11% anual ¿De cuánto tienen que ser dichos pagos?
+```{r}
+ pagoVAVen= function(valora, tasa4, periodos3)
+  {
+  a= valora*tasa4/((1-(1+tasa4)^-periodos3))
+  return(a)
+  }
+  valora= 19349.45
+  tasa4= 0.11/24
+  periodos3= 48
+  
+  at= pagoVAVen(valora, tasa4, periodos3)
+  print(paste("La quincena para el valor presente es de: $", round(at, digits=2)))
+```
+
+## Función para encontrar el número de plazos:
+
+A una persona le prestaron $19349.45 tiene que realizar pagos quincenlaes de 450 con una tarifa de interés del 11% anual ¿Por cuánto tiempo tiene que pagar para solventar lo que le prestaron?
+```{r}
+ periodosVAVen= function(valora1, anualidad3, tasa5)
+  {
+  tiempo= -log(1-((valora1*tasa5)/anualidad3))/log(1+tasa5)
+  return(tiempo)
+  }
+  valora1= 19349.45
+  tasa5= 0.11/24
+  anualidad3= 450
+  
+  perva= periodosVAVen(valora1, anualidad3, tasa5)/24
+  print(paste("Los periodos para valor presente conocido son:", round(perva, digits=2)))
+```
+
+## Función para encontrar tasa de interés:
+
+A una persona le prestaron $19349.45 y le dijeron que tenía que pagar 450 cada quincena en un plazo de 2 años ¿De cuánto tiene que ser la tasa anual para alcanzar el objetivo de pago?
+```{r}
+tasaVAVen = function(va, t2, a2)
+  {
+  dif = 1000000
+  aprox = 0
+  
+  for (i in 1:1000000) 
+    {
+    r3 = i / 1000000
+    aprox = a2 * (1 - (1 + r3)^ -t2) / r3
+    dif = abs(va - aprox)
+    
+    if (va / 10000 >= dif) 
+    {
+      break
+    }
+  }
+  
+  return(r3 * 100 * 24)
+}
+va= 19349.45
+t2= 48
+a2= 450
+tasava= tasaVAVen(va, t2, a2)
+print(paste("La tasa de interés es del:", round(tasava, digits=1)))
+
+```
+
+# Valores presentes: Anualidad anticipada
+
+## Función para encontrar valor presente:
+ Una persona paga cada quincena $450.00 durante 2 años. Si la tienda departamental le cobra de 11% de interés ¿Cuánto le prestaron?
+```{r}
+  VAAnt= function(panual2, plazos2, interes3)
+  {
+  vp= (panual2*((1-(1+interes3)^-plazos2)/interes3))*(1+interes3)
+  return(vp)
+  }
+  panual2= 450
+  plazos2= 48
+  interes3= 0.11/24
+  
+  vpresente= VAAnt(panual2, plazos2, interes3)
+  print(paste("El valor presente es: $", round(vpresente, digits=2)))
+```
+
+## Función para encontrar el pago:
+
+A una persona le prestaron $19438.13 y le dijeron que en un plazo de 2 años con una tarifa de interés del 11% anual tenía que relizar pagos quincenales ¿De cuánto deben ser estos pagos?
+```{r}
+  pagoVAAnt= function(vpre, interes4, plazos3)
+  {
+  pagoa= vpre/(((1-(1+interes4)^-plazos3)/interes4)*(1+interes4))
+  return(pagoa)
+  }
+  vpre= 19438.13
+  interes4= 0.11/24
+  plazos3= 48
+  
+  paganual= pagoVAAnt(vpre, interes4, plazos3)
+  print(paste("Este es el pago quincenal: $", round(paganual, digits=2)))
+```
+
+## Función para encontrar número de plazos:
+
+A una persona le prestaron $19438.13 y le dijeron que tenía que hacer pagos quincenales de 450 con una tarifa de interés del 11% ¿Por cuánto tiempo debe hacer esos pagos?
+```{r}
+  periodosVAAnt= function(vpre1, panual3, interes5)
+  {
+  npla= -log(1-(vpre1/(panual3*(1+interes5))*interes5))/log(1+interes5)
+  return(npla)
+  }
+  vpre1= 19438.13
+  panual3= 450
+  interes5= 0.11/24
+  
+  nplazos= periodosVAAnt(vpre1, panual3, interes5)/24
+  print(paste("El número de plazos es:", round(nplazos, digits=1)))
+```
+
+## Función para encontrar tasa de interés:
+
+A una persona le prestaron $19438.13 y le dijeron que tenía que pagar 450 quincenales en un laps de 2 años ¿Cuál debería ser la tasa de interés anual?
+```{r}
+tasaVAAnt = function(va1, t3, a3)
+  {
+  dif = 1000000
+  aprox = 0
+  
+  for (i in 1:1000000) 
+    {
+    ri = i / 1000000
+    aprox = a3 * (1 - (1 + ri)^ -t3) / ri * (1 + ri)
+    dif = abs(va1 - aprox)
+    
+    if (va1 / 10000 >= dif) 
+    {
+      break
+    }
+  }
+  
+  return(ri * 100 * 24)
+}
+  va1= 19438.13
+  t3= 48
+  a3= 450
+  
+  tarif= tasaVAAnt(va1, t3, a3)
+  print(paste("La tarifa de interés es:", round(tarif, digits=1)))
+
+
+```
+
+# Anualidades diferidas: Valor presente con pagos vencidos
+
+## Función para encontrar valor presente:
+
+Del problema anterior ¿Cuánto le prestaron si comienza a pagar 3 meses después de adquirido el financiamiento?
+```{r}
+VADif = function(pago, tasaInteres, plazo, diferimiento)
+  {
+    vadif= (pago*((1-(1+tasaInteres)^-plazo))/tasaInteres)/(1+tasaInteres)^diferimiento
+    return(vadif)
+  }
+  pago= 450
+  tasaInteres= 0.11/24
+  plazo= 48
+  diferimiento= 6
+  
+  valadif= VADif(pago, tasaInteres, plazo, diferimiento)
+  print(paste("El préstamo será ahora de:", round(valadif, digits=2)))
+
+```
+
+## Función para encontrar el pago:
+
+Del problema anterior conociendo el préstamo a partir de 3 meses y con la misma tasa de interés ¿Cuál sería el pago quincenal?
+```{r}
+  pagoVADif = function(m , ta, pla, dif) 
+  {
+  tasaq = (1 + ta)^(1/24) - 1
+  nump = pla * 24
+  m= 19349.45
+  pagoq = m /((1 - (1 + tasaq)^-nump)/tasaq)*(1 + tasaq)
+  
+  return(pagoq)
+  }
+
+pagoqt = pagoVADif(VAVen, 0.11, 2)
+pagoqdif = pagoVADif(VADif, 0.11, 2,3)
+print(paste("Pago quincenal:", round(pagoqdif, digits =0)))
+```
+
